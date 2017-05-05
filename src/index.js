@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-
+import jstz from 'jstz';
+import moment from 'moment-timezone'
+import {Provider} from 'react-redux'
 function Square(props){
   return(
     <button className="square" onClick={() => props.onClick()}>
@@ -232,10 +234,13 @@ class Calculator extends React.Component {
 //   <Calculator/>,
 //   document.getElementById('root')
 // );
+
+
 //Redux Tutorial EggHead Starts here
 var Redux = require('redux');
 import deepFreeze from 'deep-freeze';
 import expect from 'expect'
+const {createStore} = Redux;
 
 const counter = (state = 0, action) => {
   switch(action.type){
@@ -247,6 +252,7 @@ const counter = (state = 0, action) => {
       return state;
   }
 }
+
 const Counter = ({value, onIncrement, onDecrement}) => (
   <div>
    <h1>{value}</h1>
@@ -254,8 +260,6 @@ const Counter = ({value, onIncrement, onDecrement}) => (
     <button onClick={onDecrement}>-</button>
   </div>
 );
-const {createStore} = Redux;
-const store = createStore(counter);
 
 const creatStoreFromScratch = (reducer) => {
   let state;
@@ -278,14 +282,7 @@ const creatStoreFromScratch = (reducer) => {
 // store.dispatch({type : 'INCREMENT'});
 // console.log(store.getState());
 
-const render = () => {
-  ReactDOM.render(<Counter value={store.getState()}
-                           onIncrement={() => {store.dispatch({type:'INCREMENT'})}}
-                           onDecrement={() => {store.dispatch({type:'DECREMENT'})}}/>,
-  document.getElementById('root'));
-}
-store.subscribe(render);
-render();
+
 // document.addEventListener('click', () => {
 //   store.dispatch({type : 'INCREMENT'});
 // });
@@ -332,14 +329,14 @@ const testIncrementCounter = () => {
   deepFreeze(listBefore);
   expect(incrementCounter(listBefore, 1)).toEqual(listAfter);
 };
-testAddCounter();
-testRemoveCounter();
-testIncrementCounter();
-console.log('all tests passed.');
+// testAddCounter();
+// testRemoveCounter();
+// testIncrementCounter();
+// console.log('all tests passed.');
 
 //Redux Part III : Modify the value of a certain key
 
-const toggleTodo = (todo) =>{
+const toggleTodo = (todos, action) =>{
   // todo.completed = ! todo.completed;
   // return todo;
   // return {
@@ -349,25 +346,18 @@ const toggleTodo = (todo) =>{
   // };
 
   // return Object.assign({}, todo, {completed : !todo.completed});
-  return {...todo, completed : !todo.completed};
+  return todos.map((each) => {
+    if (each.id !== action.id) {
+      return each;
+    } else {
+      return {
+        ...each, completed: !each.completed
+      }
+    }
+  });
 }
-// const testToggleTodo = () => {
-//   const todoBefore = {
-//     id : 0,
-//     text : 'Learn Redux',
-//     completed : false
-//   };
-//
-//   const todoAfter = {
-//     id : 0,
-//     text : 'Learn Redux',
-//     completed : true
-//   };
-//   deepFreeze(todoBefore);
-//   expect(toggleTodo(todoBefore)).toEqual(todoAfter);
-// };
-// testToggleTodo();
-console.log('all tests passed');
+
+// console.log('all tests passed');
 
 //Redux Part IV :
 const todo = (state, action) => {
@@ -407,12 +397,19 @@ const todos = (state = [], action) => {
         todo(undefined, action)
       ];
     case 'TOGGLE_TODO':
-      return state.map(t => {todo(t, action)});
+      return state.map(t => todo(t, action));
     default:
       return state;
   }
 };
 
+// const render = () => {
+//   ReactDOM.render(<Counter value={store.getState()}
+//                            onIncrement={() => {store.dispatch({type:'INCREMENT'})}}
+//                            onDecrement={() => {store.dispatch({type:'DECREMENT'})}}/>,
+//     document.getElementById('root'));
+// }
+// render();
 const testAddTodo = () => {
   const stateBefeore = [];
   const action = {
@@ -463,21 +460,290 @@ const testToggleTodo = () => {
   deepFreeze(stateBefore);
   deepFreeze(action);
 
-  expect(todos(stateBefore, action)).toEqual(stateAfter);
+  expect(toggleTodo(stateBefore, action)).toEqual(stateAfter);
 };
 
 
-testAddTodo();
-testToggleTodo();
-console.log('all tests passed.');
+// testAddTodo();
+// testToggleTodo();
+// console.log('all tests passed.');
 
 //Course 13
 //retrive todo from todos
 //Course 14
 
-const todoApp = (state = {}, action) => {
-  return {
-    todos : todos(state.todos, action),
-    visibilityFilter : visibilityFilter(state.visibilityFilter, action)
-  };
+
+// const todoApp = (state = {}, action) => {
+//   return {
+//     todos : todos(state.todos, action),
+//     visibilityFilter : visibilityFilter(state.visibilityFilter, action)
+//   };
+// };
+
+//Equivalent to Avove:
+
+const {combineReducers} = Redux;
+// const todoApp = combineReducers({
+//   todos : todos,
+//   visibilityFilter: visibilityFilter
+//   //state field name : reducer name
+// });
+
+//Equivalent to above
+const todoApp = combineReducers({
+  todos, visibilityFilter
+  //eliminate key because key and value name are the same, use ES6 here
+});
+
+//Construct combineREduces from scratch
+const combineReducersScratch = (reducers) => {
+  return (state = {}, action) => {
+    return Object.keys(reducers).reduce(
+      (nextState, key) => {
+        nextState[key] = reducers[key](
+          state[key], action
+        );
+        return nextState;
+      },
+      {}
+    );
+  }
 };
+console.log('Dispatching ADD_TODO');
+// store.dispatch({
+//   type : 'ADD_TODO',
+//   id : 0,
+//   text : 'Learn Redux'
+// });
+
+console.log('Current State:');
+// console.log(store.getState());
+console.log('-----------------------');
+
+console.log('Dispatching ADD_TODO');
+// store.dispatch({
+//   type : 'ADD_TODO',
+//   id : 1,
+//   text : 'Go Shopping'
+// });
+
+console.log('Current State:');
+// console.log(store.getState());
+console.log('-----------------------');
+
+console.log('Dispatching TOGGLE_TODO');
+// store.dispatch({
+//   type : 'TOGGLE_TODO',
+//   id : 0
+// });
+
+console.log('Current State:');
+// console.log(store.getState());
+console.log('-----------------------');
+
+
+
+console.log('Dispatching SET_VISIBILITY_FILTER');
+// store.dispatch({
+//   type : 'SET_VISIBILITY_FILTER',
+//   filter : 'SHOW_COMPLETED'
+// });
+console.log('Current State:');
+// console.log(store.getState());
+console.log('-----------------------');
+
+//Course 17
+var nextTodoId = 2;
+const getVisibleTodos = (todos, filter) => {
+  switch(filter){
+    case 'SHOW_ALL':
+      return todos;
+    case 'SHOW_COMPLETED':
+      return todos.filter(t => t.completed)
+    case 'SHOW_ACTIVE':
+      return todos.filter(t => !t.completed);
+  }
+};
+const Todo = ({
+  onClick,
+  completed,
+  text
+              }) => (
+  <li onClick={onClick}
+      style={{
+        textDecoration: completed ? 'line-through' : 'none'
+      }}
+  >{text}</li>
+);
+
+const TodoList = ({
+  todos,
+  onTodoClick
+                  }) => (
+  <ul>
+    {todos.map(todo =>
+    <Todo
+      key={todo.id}
+      {...todo}
+      onClick={() => onTodoClick(todo.id)}
+    />)}
+  </ul>
+);
+
+const AddToDo = () => {
+  let input;
+  return (
+    <div>
+      <input ref={node => {
+        input = node;
+      }}/>
+      <button
+        onClick={() => {
+          store.dispatch({
+            type: 'ADD_TODO',
+            id: nextTodoId ++,
+            text: input.value
+          })
+          input.value = '';
+        }
+      }
+      >Add Todo</button>
+    </div>);
+};
+const Link = ({active,children,onClick}) => {//presentational component
+  if(active){
+    return <span>{children}</span>;
+  }
+  return <a href="#"
+            onClick={e=>{
+              e.preventDefault();
+              onClick();
+              }}>{children}</a>;
+};
+
+class FilterLink extends React.Component {//read props and store.getState()
+  //container component
+  componentDidMount() {
+    const {store} = this.context
+
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+    //When the store state updates, we force the container object to update
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
+  }
+
+  render() {
+    const {store} = this.context
+    const props = this.props;
+    const state = store.getState();
+    return (
+      //Delegate all the presentational work to Link Component, left only the job to be calculate the props
+      //After the actions are dispatched, store will remember the new state returned by the reducers, andcall every subsriber to the store
+      <Link active={props.filter === state.visibilityFilter}
+            onClick={() => {
+              store.dispatch({
+                type: 'SET_VISIBILITY_FILTER',
+                filter: props.filter
+              })
+            }}>{props.children}</Link>
+    );
+
+  }
+}
+
+FilterLink.contextTypes = {
+  store : React.PropTypes.object
+}
+const Footer = () => (
+  //FilterLInk is container component and it can be used inside a presentational component
+  //without passing additional props to get the data from the store and specify the behavior, this keep
+  //the Footer Component simple and decoupled from the data and the behavior that its child component need
+  <p> Show {' '}
+    <FilterLink filter='SHOW_ALL'> All </FilterLink>
+    ,
+    <FilterLink filter='SHOW_COMPLETED'> Completed </FilterLink>
+    ,
+    <FilterLink filter='SHOW_ACTIVE'> Active </FilterLink>
+  </p>
+);
+
+class VisibleTodoList extends React.Component{
+  componentDidMount() {
+    const {store} = this.context
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+    //When the store state updates, we force the container object to update
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
+  }
+  render(){
+    const {store} = this.context
+    const props = this.props;
+    const state = store.getState();
+
+    return (
+      <TodoList
+        todos={getVisibleTodos(
+          state.todos,
+          state.visibilityFilter
+        )}
+        onTodoClick={id => store.dispatch({type:'TOGGLE_TODO', id})}
+      />
+    );
+
+  }
+}
+
+VisibleTodoList.contextTypes = {
+  store : React.PropTypes.object
+}
+
+const TimeZone = () => {
+  const timezone = jstz.determine();
+  const zoneName = timezone.name();
+  const timeWithTimeZone = moment().tz(zoneName).format('M/D/YYYY') + ' ' + moment().tz(zoneName).format('h:mm a') + ' ' + moment.tz(zoneName).zoneAbbr();
+  return (
+    <div>
+      <p>{zoneName}</p>
+      <p>{timeWithTimeZone}</p>
+    </div>
+  )
+}
+const TodoApp = () => (
+      <div>
+        <AddToDo />
+        <VisibleTodoList />
+        <Footer />
+        <TimeZone />
+      </div>
+);
+
+
+//Below are our Provider Component from scratch
+// class Provider extends React.Component{
+//   //This Provider will make its props available to any of its children, includes grandchildren
+//   getChildContext(){
+//     return {
+//       store : this.props.store
+//     }
+//   }
+//   render(){
+//     return this.props.children;
+//   }
+// }
+//
+//
+// Provider.childContextTypes = {
+//   store : React.PropTypes.object
+// }
+
+const store = createStore(todoApp);
+ReactDOM.render(
+  <Provider store={createStore(todoApp)}>
+    <TodoApp />
+  </Provider>,
+  document.getElementById('root')
+);
