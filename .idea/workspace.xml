@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ef2c11df-2804-49d8-9c2a-15e133adfeda" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/index.js" afterPath="$PROJECT_DIR$/src/index.js" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -33,8 +32,8 @@
       <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1705">
-              <caret line="747" column="33" lean-forward="true" selection-start-line="747" selection-start-column="33" selection-end-line="747" selection-end-column="33" />
+            <state relative-caret-position="171">
+              <caret line="705" column="5" lean-forward="true" selection-start-line="705" selection-start-column="5" selection-end-line="705" selection-end-column="5" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
                 <element signature="e#5583#5620#0" expanded="true" />
@@ -90,8 +89,8 @@
       <find>subscribe</find>
       <find>render</find>
       <find>toggle</find>
-      <find>toggleTodo</find>
       <find>create</find>
+      <find>toggleTodo</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -135,10 +134,8 @@
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-3120" />
-    <option name="y" value="-648" />
-    <option name="width" value="1200" />
-    <option name="height" value="1920" />
+    <option name="width" value="1440" />
+    <option name="height" value="900" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -666,7 +663,7 @@
       <workItem from="1493743821856" duration="7937000" />
       <workItem from="1493828406381" duration="10031000" />
       <workItem from="1493854714446" duration="13158000" />
-      <workItem from="1494027778920" duration="602000" />
+      <workItem from="1494027778920" duration="3945000" />
     </task>
     <task id="LOCAL-00001" summary="final version of tutorial">
       <created>1493400374026</created>
@@ -689,14 +686,21 @@
       <option name="project" value="LOCAL" />
       <updated>1493771796692</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="05/02/2017 redux tutorial">
+      <created>1494028546437</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1494028546437</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="39282000" />
+    <option name="totallyTimeSpent" value="42625000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-3120" y="-648" width="1200" height="1920" extended-state="0" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -714,7 +718,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.126943" sideWeight="0.49315068" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.105150215" sideWeight="0.49315068" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -992,8 +996,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1705">
-          <caret line="747" column="33" lean-forward="true" selection-start-line="747" selection-start-column="33" selection-end-line="747" selection-end-column="33" />
+        <state relative-caret-position="171">
+          <caret line="705" column="5" lean-forward="true" selection-start-line="705" selection-start-column="5" selection-end-line="705" selection-end-column="5" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
             <element signature="e#5583#5620#0" expanded="true" />

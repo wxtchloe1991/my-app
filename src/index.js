@@ -554,6 +554,23 @@ console.log('-----------------------');
 
 //Course 17
 var nextTodoId = 2;
+const addTodo = (text) => {
+  return {
+    type: 'ADD_TODO',
+    id: nextTodoId ++,
+    text
+  }
+}
+const setVisibilityFilter = (filter) => {
+  return {
+    type: 'SET_VISIBILITY_FILTER',
+      filter
+  }
+}
+const toggleTodo2 = (id) => {
+  return {type: 'TOGGLE_TODO', id}
+}
+//extract action creator functions from the components can tell what actions our app can create, which is good for large app
 const getVisibleTodos = (todos, filter) => {
   switch(filter){
     case 'SHOW_ALL':
@@ -590,7 +607,7 @@ const TodoList = ({
   </ul>
 );
 
-const AddToDo = () => {
+let AddToDo = ({dispatch}) => {
   let input;
   return (
     <div>
@@ -599,17 +616,21 @@ const AddToDo = () => {
       }}/>
       <button
         onClick={() => {
-          store.dispatch({
-            type: 'ADD_TODO',
-            id: nextTodoId ++,
-            text: input.value
-          })
+          dispatch(addTodo(input.value))
           input.value = '';
         }
       }
       >Add Todo</button>
     </div>);
 };
+
+AddToDo = connect ( // only send dispatch
+  // null,
+  // disptach => {
+  //   return {dispatch}
+  // }    -> null, null //second null will still send dispatch
+)(AddToDo)
+
 const Link = ({active,children,onClick}) => {//presentational component
   if(active){
     return <span>{children}</span>;
@@ -621,41 +642,59 @@ const Link = ({active,children,onClick}) => {//presentational component
               }}>{children}</a>;
 };
 
-class FilterLink extends React.Component {//read props and store.getState()
-  //container component
-  componentDidMount() {
-    const {store} = this.context
-
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
-    //When the store state updates, we force the container object to update
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
-
-  render() {
-    const {store} = this.context
-    const props = this.props;
-    const state = store.getState();
-    return (
-      //Delegate all the presentational work to Link Component, left only the job to be calculate the props
-      //After the actions are dispatched, store will remember the new state returned by the reducers, andcall every subsriber to the store
-      <Link active={props.filter === state.visibilityFilter}
-            onClick={() => {
-              store.dispatch({
-                type: 'SET_VISIBILITY_FILTER',
-                filter: props.filter
-              })
-            }}>{props.children}</Link>
-    );
-
+const mapStateToLinkProps = (state, ownProps) => {
+  return {
+    active : ownProps.filter === state.visibilityFilter
   }
 }
 
-FilterLink.contextTypes = {
-  store : React.PropTypes.object
+const mapDispatchToLinkProps = (dispatch, ownProps) => {
+  return {
+    onClick : () => {
+      dispatch(setVisibilityFilter(ownProps.filter))
+    }
+  }
 }
+const FilterLink = connect(
+  mapStateToLinkProps,
+  mapDispatchToLinkProps
+)(Link)
+
+// class FilterLink extends React.Component {//read props and store.getState()
+//   //container component
+//   componentDidMount() {
+//     const {store} = this.context
+//
+//     this.unsubscribe = store.subscribe(() => this.forceUpdate());
+//     //When the store state updates, we force the container object to update
+//   }
+//
+//   componentWillUnmount() {
+//     this.unsubscribe()
+//   }
+//
+//   render() {
+//     const {store} = this.context
+//     const props = this.props;
+//     const state = store.getState();
+//     return (
+//       //Delegate all the presentational work to Link Component, left only the job to be calculate the props
+//       //After the actions are dispatched, store will remember the new state returned by the reducers, andcall every subsriber to the store
+//       <Link active={props.filter === state.visibilityFilter}
+//             onClick={() => {
+//               store.dispatch({
+//                 type: 'SET_VISIBILITY_FILTER',
+//                 filter: props.filter
+//               })
+//             }}>{props.children}</Link>
+//     );
+//
+//   }
+// }
+//
+// FilterLink.contextTypes = {
+//   store : React.PropTypes.object
+// }
 const Footer = () => (
   //FilterLInk is container component and it can be used inside a presentational component
   //without passing additional props to get the data from the store and specify the behavior, this keep
@@ -669,37 +708,55 @@ const Footer = () => (
   </p>
 );
 
-class VisibleTodoList extends React.Component{
-  componentDidMount() {
-    const {store} = this.context
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
-    //When the store state updates, we force the container object to update
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
-  render(){
-    const {store} = this.context
-    const props = this.props;
-    const state = store.getState();
-
-    return (
-      <TodoList
-        todos={getVisibleTodos(
-          state.todos,
-          state.visibilityFilter
-        )}
-        onTodoClick={id => store.dispatch({type:'TOGGLE_TODO', id})}
-      />
-    );
-
+const mapStateToTodoListProps = (state) => {
+  return {
+    todos: getVisibleTodos(
+      state.todos,
+      state.visibilityFilter
+    )
   }
 }
 
-VisibleTodoList.contextTypes = {
-  store : React.PropTypes.object
+const mapDispatchToTodoListProps = (dispatch) => {
+  return {
+      onTodoClick: (id) => {dispatch(toggleTodo2(id))}
+  }
 }
+
+import {connect} from 'react-redux'
+const VisibleTodoList = connect(
+  mapStateToTodoListProps,
+  mapDispatchToTodoListProps
+)(TodoList)
+
+// class VisibleTodoList extends React.Component{
+//   componentDidMount() {
+//     const {store} = this.context
+//     this.unsubscribe = store.subscribe(() => this.forceUpdate());
+//     //When the store state updates, we force the container object to update
+//   }
+//
+//   componentWillUnmount() {
+//     this.unsubscribe()
+//   }
+//   render(){
+//     const {store} = this.context
+//     const props = this.props;
+//     const state = store.getState();
+//
+//     return (
+//       <TodoList
+//         // todos={} go to mapStateToProps
+//         // onTodoClick={} go to mapDispatchToProps
+//       />
+//     );
+//
+//   }
+// }
+//
+// VisibleTodoList.contextTypes = {
+//   store : React.PropTypes.object
+// }
 
 const TimeZone = () => {
   const timezone = jstz.determine();
